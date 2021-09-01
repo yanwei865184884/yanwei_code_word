@@ -1,9 +1,9 @@
 server:
-  port: 49999
+  port: 50001
 
 spring:
   application:
-    name: @artifactId@
+    name: testEmil
   cloud:
     nacos:
       discovery:
@@ -12,9 +12,11 @@ spring:
       config:
         namespace:  ${NACOS_NAMESPACE:}
         server-addr: ${spring.cloud.nacos.discovery.server-addr}
-        prefix: @artifactId@
+        prefix: testEmil
         file-extension: yml
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
         enabled: false
 
+  profiles:
+    active: helloworld
