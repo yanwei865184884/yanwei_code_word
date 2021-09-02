@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 public interface MailApi {
 
+    /**
+     * 发送邮件
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/api/sendMail",
             produces = { "application/json" },
             consumes = { "application/json" },
@@ -20,7 +25,11 @@ public interface MailApi {
     ResponseEntity<BaseResponse> sendMail( @RequestBody SendMailRequest request);
 
 
-
+    /**
+     * 设置邮件发送人
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/api/setSendUser",
             produces = { "application/json" },
             consumes = { "application/json" },
