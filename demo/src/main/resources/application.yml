@@ -1,1 +1,23 @@
 
+server:
+  port: 50001
+
+spring:
+  application:
+    name: testEmil
+  cloud:
+    nacos:
+      discovery:
+        namespace:  ${NACOS_NAMESPACE:}
+        server-addr: ${NACOS_HOST:localhost}:${NACOS_PORT:8848}
+      config:
+        namespace:  ${NACOS_NAMESPACE:}
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        prefix: testEmil
+        file-extension: yml
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+        enabled: false
+
+  profiles:
+    active: helloworld

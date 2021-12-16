@@ -9,6 +9,9 @@
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>demo</module>
+        <module>rebbitmq-01</module>
+        <module>rebbitmq-02</module>
+        <module>common</module>
     </modules>
     <name>codeword</name>
     <description>Demo project for Spring Boot</description>
