@@ -15,9 +15,9 @@ public class MsgConsumer {
      * 将Channel与Queue进行绑定
      * 创建一个Consumer，从Queue中获取数据
      * 消息消费之后，ack
-     * @param exchange
-     * @param queue
-     * @param routingKey
+     * @param exchange 交换机
+     * @param queue 队列名称
+     * @param routingKey 路由键
      * @throws IOException
      * @throws TimeoutException
      */
@@ -35,7 +35,9 @@ public class MsgConsumer {
         System.out.println("[*] Waiting for message. To exist press CTRL+C");
         Consumer consumer = new DefaultConsumer(channel) {
             @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+            public void handleDelivery(String consumerTag,
+                                       Envelope envelope,
+                                       AMQP.BasicProperties properties,
                                        byte[] body) throws IOException {
                 String message = new String(body, "UTF-8");
                 try {
@@ -50,6 +52,51 @@ public class MsgConsumer {
         channel.basicConsume(queue, false, consumer);
     }
 
+    /**
+     * 推模式获取mq消息
+     */
+    public static void pushConsumerMsg(String exchange,String queryName, BuiltinExchangeType exchangeType, String routingKey) throws IOException, TimeoutException {
+        System.out.println(1);
+        //持续订阅 消费消息
+        ConnectionFactory connectionFactory = RabbitUtil.getConnectionFactory();
+        Connection connection = connectionFactory.newConnection();
+        final Channel channel = connection.createChannel();
+        channel.queueDeclare(queryName,true,false,false,null);
+        Consumer defaultConsumer = new DefaultConsumer(channel) {
+            @Override
+            public void handleDelivery(String consumerTag,
+                                       Envelope envelope,
+                                       AMQP.BasicProperties properties,
+                                       byte[] body) throws IOException {
+                System.out.println(12);
+                System.out.println("这他喵的是啥？");
+                System.out.println("consumerTag:"+consumerTag);
+                System.out.println("body:"+new String(body,"UTF-8"));
+                channel.basicAck(envelope.getDeliveryTag(),false);
+            }
+        };
+        channel.basicConsume(queryName,defaultConsumer);
+        RabbitUtil.connectionClose(connection,channel);
+    }
 
-
+    /**
+     * 拉模式获取mq消息
+     */
+    public static void getConsumerMsg(String exchange,
+                                      String queryName,
+                                      BuiltinExchangeType exchangeType,
+                                      String routingKey) throws IOException, TimeoutException {
+        ConnectionFactory connectionFactory = RabbitUtil.getConnectionFactory();
+        Connection connection = connectionFactory.newConnection();
+        final Channel channel = connection.createChannel();
+        GetResponse getResponse = channel.basicGet(queryName, true);
+        if(null == getResponse){
+            System.out.println("已经没有数据了");
+        }else{
+            byte[] body = getResponse.getBody();
+            String s = new String(body);
+            System.out.println(s);
+        }
+        RabbitUtil.connectionClose(connection,channel);
+    }
 }
